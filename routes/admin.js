@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const Registration = require("../models/Registration");
 
+const ExcelJS = require("exceljs");
+
 // --------------------
 // Middleware to check admin login
 // --------------------
@@ -50,6 +52,70 @@ router.post("/login", async (req, res) => {
 router.post("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/admin/login");
+});
+
+router.get("/download-registrations", isAdmin, async (req, res) => {
+  try {
+    const registrations = await Registration.find().populate("user");
+
+    // Create a new workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Registrations");
+
+    // Add header row
+    worksheet.columns = [
+      { header: "Name", key: "name", width: 25 },
+      { header: "Email", key: "email", width: 30 },
+      { header: "Author", key: "author", width: 10 },
+      { header: "Nationality", key: "nationality", width: 15 },
+      { header: "Category", key: "category", width: 15 },
+      { header: "Conference Type", key: "conferenceType", width: 25 },
+      { header: "Paper ID", key: "paperId", width: 15 },
+      { header: "Fee", key: "fee", width: 15 },
+      { header: "Transaction No.", key: "transactionNo", width: 20 },
+      { header: "Registration Date", key: "registrationDate", width: 20 },
+      { header: "Status", key: "status", width: 10 },
+    ];
+
+    // Add rows
+    registrations.forEach((reg) => {
+      worksheet.addRow({
+        name: reg.user.name,
+        email: reg.user.email,
+        author: reg.isAuthor ? "Yes" : "No",
+        nationality: reg.nationality,
+        category: reg.category,
+        conferenceType:
+          reg.conferenceType === "full"
+            ? "Full Conference including Tutorials/Workshops"
+            : "Only Tutorial/Workshop",
+        paperId: reg.paperId || "",
+        fee:
+          reg.nationality === "international"
+            ? `$${reg.fee} (≈ ₹${reg.fee * 88})`
+            : `₹${reg.fee}`,
+        transactionNo: reg.transactionNo || "",
+        registrationDate: new Date(reg.registrationDate).toLocaleString(),
+        status: reg.status === "cancelled" ? "Cancelled" : "Active",
+      });
+    });
+
+    // Send the file as a download
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=registrations.xlsx"
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
 });
 
 // --------------------
