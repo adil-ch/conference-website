@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Conference Registration</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-light bg-white shadow-sm">
+      <div class="container d-flex justify-content-between">
+        <span class="navbar-brand mb-0 h1">Conference Registration</span>
+        <form action="/auth/logout" method="POST">
+          <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+        </form>
+      </div>
+    </nav>
+
+    <!-- Registration Form -->
+    <div class="container mt-4">
+      <h3>Welcome, <%= user.name %></h3>
+      <p>Please fill out your registration details and payment information:</p>
+
+      <form
+        action="/register/complete"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <!---->
+
+        <!---->
+
+        <!-- Salutation -->
+        <div class="mb-3">
+          <label class="form-label">Salutation</label>
+          <select class="form-select" name="salutation" required>
+            <option value="" selected disabled>Select Salutation</option>
+            <option value="Prof.">Prof.</option>
+            <option value="Dr.">Dr.</option>
+            <option value="Mr.">Mr.</option>
+            <option value="Ms.">Ms.</option>
+          </select>
+        </div>
+
+        <!-- First Name and Last Name -->
+        <div class="row">
+          <div class="col mb-3">
+            <label class="form-label">First Name</label>
+            <input
+              type="text"
+              class="form-control"
+              name="firstName"
+              value="<%= user.name.split(' ')[0] %>"
+              required
+            />
+          </div>
+          <div class="col mb-3">
+            <label class="form-label">Last Name</label>
+            <input
+              type="text"
+              class="form-control"
+              name="lastName"
+              value="<%= user.name.split(' ')[1] || '' %>"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Email (readonly) -->
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            value="<%= user.email %>"
+            readonly
+          />
+        </div>
+
+        <!-- Gender -->
+        <div class="mb-3">
+          <label class="form-label">Gender</label><br />
+          <input type="radio" name="gender" value="Male" checked /> Male
+          <input type="radio" name="gender" value="Female" /> Female
+          <input type="radio" name="gender" value="Other" /> Other
+        </div>
+
+        <!-- Year of Birth -->
+        <div class="mb-3">
+          <label class="form-label">Year of Birth</label>
+          <select class="form-select" name="yearOfBirth" required>
+            <% for(let y=1950; y<=2025; y++) { %> <% if(y == 1985) { %>
+            <option value="<%= y %>" selected><%= y %></option>
+            <% } else { %>
+            <option value="<%= y %>"><%= y %></option>
+            <% } %> <% } %>
+          </select>
+        </div>
+
+        <!-- Affiliation -->
+        <div class="mb-3">
+          <label for="primaryAffiliation" class="form-label"
+            >Primary Affiliation</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="primaryAffiliation"
+            name="primaryAffiliation"
+            required
+          />
+        </div>
+
+        <!-- Country -->
+        <div class="mb-3">
+          <label class="form-label">Country</label>
+          <select class="form-select" name="country" required>
+            <option value="" selected disabled>Select Country</option>
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+            <option value="UK">UK</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <!-- Are you a Student? -->
+        <div class="mb-3">
+          <label class="form-label">Are you a Student?</label><br />
+          <input type="radio" name="isStudent" value="yes" /> Yes
+          <input type="radio" name="isStudent" value="no" checked /> No
+        </div>
+
+        <!-- Student ID Card (conditionally shown) -->
+        <div class="mb-3" id="studentIdDiv" style="display: none">
+          <label class="form-label">Student ID Card (PDF)</label>
+          <input
+            type="file"
+            class="form-control"
+            name="studentIdCard"
+            accept="application/pdf"
+          />
+        </div>
+
+        <!-- Mobile Contact -->
+        <div class="mb-3">
+          <label class="form-label">Mobile Contact Number</label>
+          <input type="text" class="form-control" name="mobile" required />
+        </div>
+
+        <!-- WhatsApp Number -->
+        <div class="mb-3">
+          <label class="form-label">WhatsApp Number</label>
+          <input type="text" class="form-control" name="whatsapp" />
+        </div>
+
+        <!-- Author -->
+        <div class="mb-3">
+          <label class="form-label">Are you an Author?</label><br />
+          <input type="radio" name="isAuthor" value="yes" /> Yes
+          <input type="radio" name="isAuthor" value="no" checked /> No
+        </div>
+
+        <!-- Nationality -->
+        <div class="mb-3">
+          <label class="form-label">Nationality</label><br />
+          <input type="radio" name="nationality" value="national" checked />
+          National
+          <input type="radio" name="nationality" value="international" />
+          International
+        </div>
+
+        <!-- Category -->
+        <div class="mb-3">
+          <label class="form-label">Category</label>
+          <select class="form-select" name="category" required>
+            <option value="" selected disabled>Select category</option>
+            <option value="IEEE Member">IEEE Member</option>
+            <option value="Non-member">Non-member</option>
+            <option value="IEEE Student Member">IEEE Student Member</option>
+            <option value="Student Non-member">Student Non-member</option>
+          </select>
+        </div>
+
+        <!-- IEEE Membership Number -->
+        <div class="mb-3">
+          <label class="form-label">IEEE Membership Number (optional)</label>
+          <input type="text" class="form-control" name="ieeeNumber" />
+        </div>
+
+        <!-- Conference Type -->
+        <div class="mb-3">
+          <label class="form-label">Conference Type</label>
+          <select
+            class="form-select"
+            name="conferenceType"
+            id="conferenceType"
+            required
+          >
+            <option value="full">
+              Full Conference including Tutorials/Workshops
+            </option>
+            <option value="tutorial">Only Tutorial/Workshop</option>
+          </select>
+        </div>
+
+        <!-- Paper ID -->
+        <div class="mb-3">
+          <label class="form-label">Paper ID</label>
+          <input type="text" class="form-control" name="paperId" id="paperId" />
+        </div>
+
+        <!-- Summary String -->
+        <div class="mb-3">
+          <label class="form-label">Your Registration Summary:</label>
+          <div id="summaryDisplay" class="alert alert-warning fs-6">--</div>
+          <input type="hidden" name="summary" id="summaryInput" />
+        </div>
+
+        <!-- Fee Display (calculated later) -->
+        <div class="mb-3">
+          <label class="form-label">Your Calculated Fee:</label>
+          <div id="feeDisplay" class="alert alert-info fs-5">--</div>
+          <input type="hidden" name="fee" id="feeInput" />
+        </div>
+
+        <!-- Dummy Payment Button -->
+        <div id="paymentSection" class="mt-3" style="display: block">
+          <p><strong>Proceed to Payment:</strong></p>
+          <a
+            id="paymentLink"
+            href="https://example.com/dummy-payment"
+            target="_blank"
+            class="btn btn-success"
+          >
+            Pay Now
+          </a>
+        </div>
+
+        <hr />
+
+        <!-- Payment Info -->
+        <h5>Payment Details</h5>
+        <div class="mb-3">
+          <label for="transactionNo" class="form-label"
+            >Transaction Number</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="transactionNo"
+            name="transactionNo"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="paymentProof" class="form-label"
+            >Upload PDF Proof of Payment</label
+          >
+          <input
+            class="form-control"
+            type="file"
+            id="paymentProof"
+            name="paymentProof"
+            accept="application/pdf"
+            required
+          />
+        </div>
+
+        <!-- Date of Payment -->
+        <div class="mb-3">
+          <label for="dateOfPayment" class="form-label">Date of Payment</label>
+          <input
+            type="date"
+            class="form-control"
+            id="dateOfPayment"
+            name="dateOfPayment"
+            required
+          />
+        </div>
+
+        <!-- Comment -->
+        <div class="mb-3">
+          <label class="form-label">Comment (if any)</label>
+          <textarea class="form-control" name="comment" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+          Submit & Generate Receipt
+        </button>
+
+        <a href="/user/dashboard" class="btn btn-secondary"
+          >Back to Dashboard</a
+        >
+      </form>
+    </div>
+
+    <!-- External JS -->
+    <script src="/js/registration.js"></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CSRF Test Page</title>
+  </head>
+  <body>
+    <h1>Welcome to Conference Registration</h1>
+
+    <form action="/auth/test-post" method="POST">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <label for="msg">Message:</label>
+      <input type="text" name="msg" id="msg" />
+      <button type="submit">Send</button>
+    </form>
+  </body>
+</html>

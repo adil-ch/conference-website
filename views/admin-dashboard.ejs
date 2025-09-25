@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Conference Registration</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-light bg-white shadow-sm">
+      <div class="container d-flex justify-content-between">
+        <span class="navbar-brand mb-0 h1">Conference Admin</span>
+        <form action="/admin/logout" method="POST" class="d-inline">
+          <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+        </form>
+      </div>
+    </nav>
+
+    <div class="container mt-5">
+      <div class="card shadow-sm p-4">
+        <h3 class="mb-4">All Registrations</h3>
+        <p class="text-muted mb-4">
+          Below is the complete list of registered participants.
+        </p>
+
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Author</th>
+                <th>Nationality</th>
+                <th>Category</th>
+                <th>Conference Type</th>
+                <th>Paper ID</th>
+                <th>Fee</th>
+                <th>Transaction No.</th>
+                <th>Proof</th>
+                <th>Registration Date</th>
+                <th>Receipt</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% registrations.forEach(reg => { %>
+              <tr>
+                <td><%= reg.user.name %></td>
+                <td><%= reg.user.email %></td>
+
+                <td><% if (reg.isAuthor) { %>Yes<% } else { %>No<% } %></td>
+
+                <td><%= reg.nationality %></td>
+                <td><%= reg.category %></td>
+
+                <td>
+                  <% if (reg.conferenceType === "full") { %> Full Conference
+                  including Tutorials/Workshops <% } else { %> Only
+                  Tutorial/Workshop <% } %>
+                </td>
+
+                <td><%= reg.paperId %></td>
+                <td>
+                  <% if (reg.nationality === "international") { %> $ <%= reg.fee
+                  %> (≈ ₹ <%= reg.fee * 88 %>) <% } else { %> ₹ <%= reg.fee %>
+                  <% } %>
+                </td>
+                <td><%= reg.transactionNo %></td>
+
+                <td>
+                  <% if (reg.pdfPath) { %>
+                  <a
+                    href="<%= reg.pdfPath %>"
+                    target="_blank"
+                    class="btn btn-sm btn-outline-primary"
+                    >View PDF</a
+                  >
+                  <% } else { %> N/A <% } %>
+                </td>
+
+                <td><%= new Date(reg.registrationDate).toLocaleString() %></td>
+                <td>
+                  <% if (reg.receiptPath) { %>
+                  <a
+                    href="<%= reg.receiptPath %>"
+                    class="btn btn-sm btn-success"
+                    download
+                  >
+                    Download
+                  </a>
+                  <% } else { %>
+                  <span class="text-muted">Not Available</span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (reg.status === "cancelled") { %>
+                  <span class="text-danger fw-bold">Cancelled</span>
+                  <% } else { %>
+                  <span class="text-success fw-bold">Active</span>
+                  <% } %>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Receipt - Conference Registration</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-light">
+    <!-- Navbar with logout -->
+    <nav class="navbar navbar-light bg-white shadow-sm">
+      <div class="container">
+        <span class="navbar-brand mb-0 h1">Conference Registration</span>
+        <form action="/auth/logout" method="POST" class="d-inline">
+          <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+        </form>
+      </div>
+    </nav>
+
+    <div class="container mt-5">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Registration Receipt</h4>
+        </div>
+        <div class="card-body">
+          <p class="mb-3">Thank you for registering! Here are your details:</p>
+
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <th scope="row">Name</th>
+                <td>
+                  <%= registration.salutation %> <%= registration.firstName %>
+                  <%= registration.lastName %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Email</th>
+                <td><%= user.email %></td>
+              </tr>
+              <tr>
+                <th scope="row">Gender</th>
+                <td><%= registration.gender %></td>
+              </tr>
+              <tr>
+                <th scope="row">Year of Birth</th>
+                <td><%= registration.yearOfBirth %></td>
+              </tr>
+              <tr>
+                <th scope="row">Affiliation</th>
+                <td><%= registration.affiliation %></td>
+              </tr>
+              <tr>
+                <th scope="row">Country</th>
+                <td><%= registration.country %></td>
+              </tr>
+              <tr>
+                <th scope="row">Student</th>
+                <td><%= registration.isStudent ? "Yes" : "No" %></td>
+              </tr>
+              <% if (registration.isStudent && registration.studentIdCardPath) {
+              %>
+              <tr>
+                <th scope="row">Student ID Card</th>
+                <td>
+                  <a
+                    href="<%= registration.studentIdCardPath %>"
+                    target="_blank"
+                    >View Uploaded PDF</a
+                  >
+                </td>
+              </tr>
+              <% } %>
+              <tr>
+                <th scope="row">Mobile</th>
+                <td><%= registration.mobile %></td>
+              </tr>
+              <tr>
+                <th scope="row">WhatsApp</th>
+                <td><%= registration.whatsapp || "Not provided" %></td>
+              </tr>
+              <tr>
+                <th scope="row">IEEE Membership Number</th>
+                <td><%= registration.ieeeNumber || "N/A" %></td>
+              </tr>
+              <tr>
+                <th scope="row">Author</th>
+                <td><%= registration.isAuthor ? "Yes" : "No" %></td>
+              </tr>
+              <tr>
+                <th scope="row">Nationality</th>
+                <td><%= registration.nationality %></td>
+              </tr>
+              <tr>
+                <th scope="row">Category</th>
+                <td><%= registration.category %></td>
+              </tr>
+              <tr>
+                <th scope="row">Conference Type</th>
+                <td>
+                  <% if (registration.conferenceType === "full") { %> Full
+                  Conference including Tutorials/Workshops <% } else { %> Only
+                  Tutorial/Workshop <% } %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Paper ID</th>
+                <td><%= registration.paperId %></td>
+              </tr>
+              <tr>
+                <th scope="row">Registration Summary</th>
+                <td><%= registration.summary || "--" %></td>
+              </tr>
+              <tr>
+                <th scope="row">Fee Paid</th>
+                <td>
+                  <% if (registration.nationality === "international") { %> $
+                  <%= registration.fee %> (≈ ₹ <%= registration.fee * 88 %>) <%
+                  } else { %> ₹ <%= registration.fee %> <% } %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Transaction No.</th>
+                <td><%= registration.transactionNo %></td>
+              </tr>
+              <tr>
+                <th scope="row">Proof of Payment</th>
+                <td>
+                  <% if (registration.pdfPath) { %>
+                  <a href="<%= registration.pdfPath %>" target="_blank"
+                    >View Uploaded PDF</a
+                  >
+                  <% } else { %> Not uploaded <% } %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Payment Date</th>
+                <td>
+                  <%= registration.paymentDate ?
+                  registration.paymentDate.toDateString() : "N/A" %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Date of Registration</th>
+                <td><%= registration.registrationDate.toDateString() %></td>
+              </tr>
+              <tr>
+                <th scope="row">Comment</th>
+                <td><%= registration.comment || "N/A" %></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="mt-4 d-flex justify-content-between">
+            <a href="/user/dashboard" class="btn btn-secondary"
+              >Back to Dashboard</a
+            >
+            <% if (receiptDownloadUrl) { %>
+            <a
+              href="<%= receiptDownloadUrl %>"
+              class="btn btn-success"
+              download
+            >
+              Download PDF Receipt
+            </a>
+            <% } else { %>
+            <button class="btn btn-success" disabled>
+              Download PDF (Not Available)
+            </button>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
