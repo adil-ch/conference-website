@@ -130,7 +130,7 @@ router.post("/forgot", csrfProtection, async (req, res) => {
       },
     });
 
-    const resetURL = `http://localhost:${process.env.PORT}/auth/reset/${token}`;
+    const resetURL = `${process.env.BASE_URL}/auth/reset/${token}`;
 
     const mailOptions = {
       to: user.email,
