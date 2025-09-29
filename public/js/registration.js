@@ -1,7 +1,7 @@
 // public/js/registration.js
 
 // Early-bird deadline
-const earlyBirdDeadline = new Date("2025-09-25T23:59:59");
+const earlyBirdDeadline = new Date("2025-10-21T23:59:59");
 
 // Base fee table (without GST)
 const baseFees = {
@@ -85,13 +85,13 @@ function calculateSummary() {
 
   // Build string
   const summary = [
+    `paper_${paperId}`,
     isAuthor === "yes" ? "Author" : "Non_author",
     nationality,
     category.replace(/\s+/g, "_"),
     confType === "full" ? "Full_conference" : "Tutorial_only",
-    `paper_${paperId}`,
-    `txn_${transactionNo}`,
-    phase,
+    // `txn_${transactionNo}`,
+    // phase,
   ].join("-");
 
   // Update UI + hidden field
@@ -138,8 +138,6 @@ function handleAuthorChange() {
 
   calculateFee(); // update fee when switching
 }
-
-
 
 // Fee calculation
 function calculateFee() {
@@ -234,5 +232,3 @@ studentRadios.forEach((r) =>
     }
   })
 );
-
-

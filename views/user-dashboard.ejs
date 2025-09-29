@@ -42,6 +42,7 @@
                 <th>Registration Type</th>
                 <th>Paper ID</th>
                 <th>Date</th>
+                <th>Proof of payment</th>
                 <th>Receipt</th>
                 <!-- ✅ new column -->
                 <th>Status</th>
@@ -61,6 +62,16 @@
                 </td>
                 <td><%= reg.paperId %></td>
                 <td><%= new Date(reg.createdAt).toLocaleString() %></td>
+                <td>
+                  <% if (reg.pdfPath) { %>
+                  <a
+                    href="<%= reg.pdfPath %>"
+                    target="_blank"
+                    class="btn btn-sm btn-outline-primary"
+                    >View PDF</a
+                  >
+                  <% } else { %> N/A <% } %>
+                </td>
                 <td>
                   <% if (reg.receiptPath) { %>
                   <a
@@ -113,7 +124,7 @@
           <% } %>
 
           <a href="/register/form" class="btn btn-primary">
-            Register for Conference
+            Register your Paper
           </a>
         </div>
       </div>

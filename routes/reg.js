@@ -65,14 +65,26 @@ function generatePDFReceiptBuffer(registrationData) {
       doc.image(path.join(__dirname, "../public/images/iitplogo.png"), 60, 40, {
         fit: [80, 80],
       });
+      // Right logo
+      doc.image(
+        path.join(__dirname, "../public/images/builseclogo.png"),
+        460,
+        40,
+        {
+          fit: [80, 80],
+        }
+      );
     } catch (err) {
       console.error("Logo not found:", err.message);
     }
 
     doc
-      .fontSize(22)
+      .fontSize(20)
       .fillColor("#2c5aa0")
-      .text("Conference Registration Receipt", 150, 60, { align: "center" })
+      .text("IEEE Buildsec 2025 Registration Receipt", 160, 60, {
+        align: "center",
+        width: 280, // width between left and right logos
+      })
       .moveDown(2);
 
     doc
@@ -98,15 +110,17 @@ function generatePDFReceiptBuffer(registrationData) {
         .fillColor("#2c5aa0")
         .text(title, { underline: true })
         .moveDown(0.5);
+
       doc.fontSize(10).fillColor("#000000");
       info.forEach(([label, value]) => {
         doc
           .font("Helvetica-Bold")
-          .text(label, { continued: true, width: 150 })
+          .text(`${label} `, { continued: true })
           .font("Helvetica")
           .text(value)
           .moveDown(0.3);
       });
+
       doc.moveDown(1);
     }
 
@@ -309,22 +323,33 @@ router.post(
         paymentDate: paymentDateObj,
       };
 
+      const sanitize = (str) =>
+        str.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_\-\.]/g, "");
+
+      const userIdentifier = `${sanitize(firstName)}_${sanitize(
+        lastName
+      )}_${sanitize(email)}`;
+
       // ---------- Upload paymentProof to S3 ----------
       if (req.files["paymentProof"]) {
         const file = req.files["paymentProof"][0];
-        const s3FileName = `payments/${Date.now()}_${file.originalname}`;
+        const s3FileName = `payments/${userIdentifier}_paymentProof_${Date.now()}_${sanitize(
+          file.originalname
+        )}`;
         const s3Result = await require("../utils/s3").uploadFileToS3(
           file.buffer,
           s3FileName,
           file.mimetype
         );
-        registrationData.paymentProofS3Url = s3Result.Location;
+        registrationData.pdfPath = s3Result.Location;
       }
 
       // ---------- Upload studentIdCard to S3 ----------
       if (studentFlag && req.files["studentIdCard"]) {
         const file = req.files["studentIdCard"][0];
-        const s3FileName = `studentIdCards/${Date.now()}_${file.originalname}`;
+        const s3FileName = `studentIdCards/${userIdentifier}_studentIdCard_${Date.now()}_${sanitize(
+          file.originalname
+        )}`;
         const s3Result = await require("../utils/s3").uploadFileToS3(
           file.buffer,
           s3FileName,
@@ -335,7 +360,7 @@ router.post(
 
       // ---------- Generate PDF receipt and upload to S3 ----------
       const pdfBuffer = await generatePDFReceiptBuffer(registrationData);
-      const receiptFileName = `receipts/receipt_${Date.now()}.pdf`;
+      const receiptFileName = `receipts/${userIdentifier}_receipt_${Date.now()}.pdf`;
       const s3ResultReceipt = await require("../utils/s3").uploadFileToS3(
         pdfBuffer,
         receiptFileName,
