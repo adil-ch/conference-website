@@ -180,7 +180,7 @@ function calculateFee() {
 
     // Update UI
     if (nationality === "international") {
-      const inrEquivalent = Math.round(finalFee * 88);
+      const inrEquivalent = Math.round(finalFee * 89);
       feeDisplay.textContent = `USD ${finalFee} (incl. GST) ≈ INR ${inrEquivalent}`;
     } else {
       feeDisplay.textContent = `INR ${finalFee} (incl. GST)`;
