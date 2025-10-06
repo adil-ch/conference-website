@@ -1,7 +1,7 @@
 // public/js/registration.js
 
 // Early-bird deadline
-const earlyBirdDeadline = new Date("2025-10-21T23:59:59");
+const earlyBirdDeadline = new Date("2025-10-26T23:59:59");
 
 // Base fee table (without GST)
 const baseFees = {
