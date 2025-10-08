@@ -92,7 +92,7 @@ router.get("/download-registrations", isAdmin, async (req, res) => {
         paperId: reg.paperId || "",
         fee:
           reg.nationality === "international"
-            ? `$${reg.fee} (≈ ₹${reg.fee * 88})`
+            ? `$${reg.fee} (≈ ₹${reg.fee * 89})`
             : `₹${reg.fee}`,
         transactionNo: reg.transactionNo || "",
         registrationDate: new Date(reg.registrationDate).toLocaleString(),
