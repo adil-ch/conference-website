@@ -66,6 +66,7 @@ router.get("/download-registrations", isAdmin, async (req, res) => {
     worksheet.columns = [
       { header: "Name", key: "name", width: 25 },
       { header: "Email", key: "email", width: 30 },
+      { header: "Phone", key: "phone", width: 20 }, 
       { header: "Author", key: "author", width: 10 },
       { header: "Nationality", key: "nationality", width: 15 },
       { header: "Category", key: "category", width: 15 },
@@ -82,6 +83,7 @@ router.get("/download-registrations", isAdmin, async (req, res) => {
       worksheet.addRow({
         name: reg.user.name,
         email: reg.user.email,
+        phone: reg.mobile || "N/A",
         author: reg.isAuthor ? "Yes" : "No",
         nationality: reg.nationality,
         category: reg.category,
